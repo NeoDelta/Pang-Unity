@@ -30,5 +30,18 @@ public abstract class PowerUp : MonoBehaviour
     public void EnableGravity(bool _enable = true)
     {
         m_Rigidbody.useGravity = _enable;
+        StartCoroutine(TimeCo(timer));
+    }
+
+    public IEnumerator TimeCo(float _time)
+    {
+
+        while (_time > 0)
+        {
+            yield return new WaitForEndOfFrame();
+            _time -= Time.deltaTime;
+        }
+
+        Destroy(this);
     }
 }

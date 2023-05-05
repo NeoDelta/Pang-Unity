@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Projectile projectile;
     [SerializeField] private Shield shield;
     private bool shooting = false;
+    private int ammo = 0;
 
     private Animator m_Animator;
 
@@ -25,6 +26,13 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         LevelManager.Instance.SetPlayer(this);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!collision.collider.CompareTag("Ball")) return;
+
+        LevelManager.Instance.OnLevelLose();
     }
 
     public void OnMove(InputAction.CallbackContext _ctx)
@@ -50,6 +58,8 @@ public class PlayerController : MonoBehaviour
         GameObject go = Instantiate(projectile.gameObject);
         go.transform.position = transform.position + Vector3.up;
 
+        ammo = Mathf.Max(ammo - 1, 0);
+
         while (_time > 0)
         {
             yield return new WaitForEndOfFrame();
@@ -65,22 +75,22 @@ public class PlayerController : MonoBehaviour
         m_Animator.SetFloat("Movement", Mathf.Abs(m_Movement.x));
     }
 
-    public void ChangeRoF(float _time, float _rof)
+    public void ChangeRoF(int _ammo, float _rof)
     {
-        StopCoroutine(RateOfFireCo(_time, _rof));
-        StartCoroutine(RateOfFireCo(_time, _rof));
+        ammo = _ammo;
+        StopCoroutine(RateOfFireCo(_rof));
+        StartCoroutine(RateOfFireCo(_rof));
     }
 
-    public IEnumerator RateOfFireCo(float _time, float _rof)
+    public IEnumerator RateOfFireCo(float _rof)
     {
         //Change rof
         float baseRoF = rateOfFire;
         rateOfFire = _rof;
 
-        while (_time > 0)
+        while (ammo > 0)
         {
             yield return new WaitForEndOfFrame();
-            _time -= Time.deltaTime;
         }
 
         //Resume Rof
@@ -91,8 +101,10 @@ public class PlayerController : MonoBehaviour
     {
         if (!shield) return;
 
-        StopCoroutine(ShieldCo(_time));
-        StartCoroutine(ShieldCo(_time));
+        //StopCoroutine(ShieldCo(_time));
+        //StartCoroutine(ShieldCo(_time));
+
+        shield.gameObject.SetActive(true);
     }
 
     public IEnumerator ShieldCo(float _time)

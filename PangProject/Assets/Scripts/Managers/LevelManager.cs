@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class LevelManager : Singleton<LevelManager>
 {
@@ -18,7 +19,7 @@ public class LevelManager : Singleton<LevelManager>
 
     public void StartTimer()
     {
-        StartCoroutine(TimerCo(timeInSeconds));
+        StartCoroutine(TimerCo());
     }
 
     public void SetPlayer(PlayerController _player)
@@ -43,19 +44,35 @@ public class LevelManager : Singleton<LevelManager>
         if (balls.Count != 0) return;
 
         //All balls destroyed = WIN
-        GameManager.Instance.LoadNextLevel();
+        player.GetComponent<PlayerInput>().enabled = false;
+        StopTimer();
+        Debug.Log(timeInSeconds);
+        GameManager.Instance.OnWinLevel(timeInSeconds);
     }
 
-    private IEnumerator TimerCo(float _time)
-    {
-        float remainingTime = _time;
-        GameManager.Instance.UpdateTimer(remainingTime);
 
-        while (remainingTime > 0)
+    public void StopTimer()
+    {
+        StopCoroutine(TimerCo());
+    }
+
+    private IEnumerator TimerCo()
+    {
+        GameManager.Instance.UpdateTimer(timeInSeconds);
+
+        while (timeInSeconds > 0)
         {
             yield return new WaitForEndOfFrame();
-            remainingTime -= Time.deltaTime;
-            GameManager.Instance.UpdateTimer(remainingTime);
+            timeInSeconds -= Time.deltaTime;
+            GameManager.Instance.UpdateTimer(timeInSeconds);
         }
+       
+        OnLevelLose();
+    }
+
+    public void OnLevelLose()
+    {
+        player.GetComponent<PlayerInput>().enabled = false;
+        GameManager.Instance.ReturnToMenu();
     }
 }

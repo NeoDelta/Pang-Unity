@@ -12,8 +12,12 @@ public class GameManager : PersistentSingleton<GameManager>
     [SerializeField] private List<LevelSO> levels = new List<LevelSO>();
 
     [Header("UI")]
+    [SerializeField] private Canvas hud;
     [SerializeField] private TextMeshProUGUI timer;
     [SerializeField] private TextMeshProUGUI score;
+    [SerializeField] private Canvas result;
+    [SerializeField] private TextMeshProUGUI resultTime;
+    [SerializeField] private TextMeshProUGUI resultScore;
 
     private float points = 0;
 
@@ -27,7 +31,7 @@ public class GameManager : PersistentSingleton<GameManager>
         float miliseconds = Mathf.FloorToInt((_time * 1000) % 1000);
 
         timer.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, miliseconds);
-    }
+    } 
 
     public void UpdateScore(float _points)
     {
@@ -61,11 +65,24 @@ public class GameManager : PersistentSingleton<GameManager>
 
     public void StartGame()
     {
+        points = 0;
         LoadSceneManager.Instance.LoadLevel(levels[0]);
+    }
+
+    public void ReloadLevel()
+    {
+        hud.enabled = false;
+
+        LevelSO currentLevel = levels.Find(lvl => lvl.levelName == SceneManager.GetActiveScene().name);
+        int levelIndex = levels.IndexOf(currentLevel);
+
+        LoadSceneManager.Instance.LoadLevel(levels[levelIndex]);
     }
 
     public void LoadNextLevel()
     {
+        hud.enabled = false;
+
         LevelSO currentLevel = levels.Find(lvl => lvl.levelName == SceneManager.GetActiveScene().name);
         int levelIndex = levels.IndexOf(currentLevel);
 
@@ -75,8 +92,48 @@ public class GameManager : PersistentSingleton<GameManager>
             ReturnToMenu();
     }
 
+    public void OnWinLevel(float _time)
+    {
+        StartCoroutine(ResultScreenCo(_time, points));
+    }
+
+    private IEnumerator ResultScreenCo(float _time, float _score)
+    {
+        result.enabled = true;
+
+        while (_time > 0)
+        {
+            yield return new WaitForEndOfFrame();
+            _time -= Mathf.Max(0.25f + Time.deltaTime, 0f);
+            _score += 5f;
+            UpdateResultScreen(_time, _score);
+        }
+
+        points = _score;
+        UpdateResultScreen(0, _score);
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        LoadNextLevel();
+    }
+
+    private void UpdateResultScreen(float _time, float _points)
+    {
+        float minutes = Mathf.FloorToInt(_time / 60);
+        float seconds = Mathf.FloorToInt(_time % 60);
+        float miliseconds = Mathf.FloorToInt((_time * 1000) % 1000);
+
+        resultTime.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, miliseconds);
+
+        resultScore.text = string.Format("{0:00000}", _points);
+    }
+
     public void ReturnToMenu()
     {
+        hud.enabled = false;
+        result.enabled = false;
+        points = 0;
+
         LoadSceneManager.Instance.LoadLevel(Menu);
     }
 
@@ -87,7 +144,8 @@ public class GameManager : PersistentSingleton<GameManager>
 
     public void SceneReady()
     {
-
+        result.enabled = false;
+        hud.enabled = SceneManager.GetActiveScene().name != Menu.levelName;
     }
 
 }

@@ -352,6 +352,7 @@
 "Assets/Scripts/Managers/GameManager.cs"
 "Assets/Scripts/Managers/LevelManager.cs"
 "Assets/Scripts/Managers/LoadSceneManager.cs"
+"Assets/Scripts/Managers/MainMenu.cs"
 "Assets/Scripts/Managers/PlayerController.cs"
 "Assets/Scripts/PersistentSingleton.cs"
 "Assets/Scripts/PowerUps/MachineGunPU.cs"

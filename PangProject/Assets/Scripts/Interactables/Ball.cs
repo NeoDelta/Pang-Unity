@@ -43,8 +43,8 @@ public class Ball : MonoBehaviour
         for(int i = 0; i < splitsInto.Count; i++)
         {
             GameObject go = Instantiate(splitsInto[i].gameObject, transform.position, Quaternion.identity);
-            float ballDirection = i % 2 == 0 ? m_Rigidbody.velocity.x : -m_Rigidbody.velocity.x; 
-            go.GetComponent<Rigidbody>().AddForce(new Vector3(ballDirection, 0,0), ForceMode.Impulse);
+            float ballDirection = i % 2 == 0 ? 1: -1; 
+            go.GetComponent<Rigidbody>().AddForce(new Vector3(ballDirection * initialForce, 9.81f/2f,0), ForceMode.Impulse);
 
             if (m_Rigidbody.constraints == RigidbodyConstraints.FreezeAll)
                 go.GetComponent<Ball>().Freeze();

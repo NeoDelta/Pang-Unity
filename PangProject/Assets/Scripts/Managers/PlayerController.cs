@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Min(1)] private float rateOfFire = 2f;
     [SerializeField] private Projectile projectile;
     [SerializeField] private Shield shield;
+
+    private bool triggerPress = false;
     private bool shooting = false;
     private int ammo = 0;
 
@@ -32,7 +34,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!collision.collider.CompareTag("Ball")) return;
 
-        LevelManager.Instance.OnLevelLose();
+       LevelManager.Instance.OnLevelLose();
     }
 
     public void OnMove(InputAction.CallbackContext _ctx)
@@ -46,9 +48,11 @@ public class PlayerController : MonoBehaviour
     {
         if (!projectile) return;
 
-        if (!_ctx.performed) return;
+        if (_ctx.started)
+            triggerPress = true;
 
-        if (!shooting) StartCoroutine(ShootCo(1f/rateOfFire));
+        if (_ctx.canceled)
+            triggerPress = false;
     }
 
     private IEnumerator ShootCo(float _time)
@@ -71,6 +75,17 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Move();     
+    }
+
+    private void Update()
+    {
+        if (triggerPress && !shooting)
+            StartCoroutine(ShootCo(1f / rateOfFire));
+    }
+
+    private void Move()
+    {
         transform.position += m_Movement * speed * Time.fixedDeltaTime;
         m_Animator.SetFloat("Movement", Mathf.Abs(m_Movement.x));
     }
@@ -88,7 +103,7 @@ public class PlayerController : MonoBehaviour
         float baseRoF = rateOfFire;
         rateOfFire = _rof;
 
-        while (ammo > 0)
+        while (ammo > 0f)
         {
             yield return new WaitForEndOfFrame();
         }
@@ -101,25 +116,13 @@ public class PlayerController : MonoBehaviour
     {
         if (!shield) return;
 
-        //StopCoroutine(ShieldCo(_time));
-        //StartCoroutine(ShieldCo(_time));
-
         shield.gameObject.SetActive(true);
     }
 
-    public IEnumerator ShieldCo(float _time)
+    public void Dead()
     {
-        //Activate shield
-        shield.gameObject.SetActive(true);
-
-        while (_time > 0)
-        {
-            yield return new WaitForEndOfFrame();
-            _time -= Time.deltaTime;
-        }
-
-        //Deactivate shield
-        shield.gameObject.SetActive(false);
+        m_Animator.SetTrigger("Death");
+        transform.LookAt(Camera.main.transform);
     }
 
 

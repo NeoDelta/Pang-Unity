@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: f1709c3cfc327b345a1e14f9d1100c54, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 78c3fdc50587d9748894b4a4c6ff4d09, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -679,6 +679,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1582632633}
     m_Modifications:
+    - target: {fileID: 41759766150075008, guid: 79a9303ee11ec7447a1c0349092e0b62, type: 3}
+      propertyPath: timeInSeconds
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 41759766150075009, guid: 79a9303ee11ec7447a1c0349092e0b62, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -784,9 +788,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2139861105146270464, guid: 1ed8b58998852d6488410b0f5c596d31, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3480229867484746210, guid: 1ed8b58998852d6488410b0f5c596d31, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4367990935905459997, guid: 1ed8b58998852d6488410b0f5c596d31, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7872713125024362079, guid: 1ed8b58998852d6488410b0f5c596d31, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8052196644231283396, guid: 1ed8b58998852d6488410b0f5c596d31, type: 3}
       propertyPath: m_AnchoredPosition.x

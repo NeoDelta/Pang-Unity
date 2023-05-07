@@ -354,13 +354,13 @@
 "Assets/Scripts/Managers/LoadSceneManager.cs"
 "Assets/Scripts/Managers/MainMenu.cs"
 "Assets/Scripts/Managers/PlayerController.cs"
-"Assets/Scripts/PersistentSingleton.cs"
 "Assets/Scripts/PowerUps/MachineGunPU.cs"
 "Assets/Scripts/PowerUps/PowerUp.cs"
 "Assets/Scripts/PowerUps/ShieldPU.cs"
 "Assets/Scripts/PowerUps/TimeStopPU.cs"
 "Assets/Scripts/ScriptableObjects/LevelSO.cs"
-"Assets/Scripts/Singleton.cs"
+"Assets/Scripts/Utils/PersistentSingleton.cs"
+"Assets/Scripts/Utils/Singleton.cs"
 -langversion:9.0
 
 /deterministic

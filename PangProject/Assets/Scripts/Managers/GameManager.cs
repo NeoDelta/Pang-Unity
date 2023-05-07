@@ -18,6 +18,7 @@ public class GameManager : PersistentSingleton<GameManager>
     [SerializeField] private Canvas result;
     [SerializeField] private TextMeshProUGUI resultTime;
     [SerializeField] private TextMeshProUGUI resultScore;
+    [SerializeField] private Canvas lose;
 
     private float points = 0;
 
@@ -117,6 +118,22 @@ public class GameManager : PersistentSingleton<GameManager>
         LoadNextLevel();
     }
 
+    public void OnLoseLevel()
+    {
+        if (lose.enabled) return;
+
+        FreezeTime(4f);
+        StartCoroutine(LoseScreenCo(3f));
+    }
+    private IEnumerator LoseScreenCo(float _time)
+    {
+        lose.enabled = true;
+
+        yield return new WaitForSecondsRealtime(_time);
+
+        ReturnToMenu();
+    }
+
     private void UpdateResultScreen(float _time, float _points)
     {
         float minutes = Mathf.FloorToInt(_time / 60);
@@ -130,8 +147,6 @@ public class GameManager : PersistentSingleton<GameManager>
 
     public void ReturnToMenu()
     {
-        hud.enabled = false;
-        result.enabled = false;
         points = 0;
 
         LoadSceneManager.Instance.LoadLevel(Menu);
@@ -145,6 +160,7 @@ public class GameManager : PersistentSingleton<GameManager>
     public void SceneReady()
     {
         result.enabled = false;
+        lose.enabled = false;
         hud.enabled = SceneManager.GetActiveScene().name != Menu.levelName;
     }
 

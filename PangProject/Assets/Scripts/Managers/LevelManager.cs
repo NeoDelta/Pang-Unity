@@ -46,14 +46,13 @@ public class LevelManager : Singleton<LevelManager>
         //All balls destroyed = WIN
         player.GetComponent<PlayerInput>().enabled = false;
         StopTimer();
-        Debug.Log(timeInSeconds);
         GameManager.Instance.OnWinLevel(timeInSeconds);
     }
 
 
     public void StopTimer()
     {
-        StopCoroutine(TimerCo());
+        StopAllCoroutines();
     }
 
     private IEnumerator TimerCo()
@@ -73,6 +72,7 @@ public class LevelManager : Singleton<LevelManager>
     public void OnLevelLose()
     {
         player.GetComponent<PlayerInput>().enabled = false;
-        GameManager.Instance.ReturnToMenu();
+        player.Dead();
+        GameManager.Instance.OnLoseLevel();
     }
 }
